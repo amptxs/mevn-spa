@@ -83,9 +83,11 @@
 
   header {
     background-color: #fff;
-    position: fixed;
+    border-color: #fff #fff gainsboro #fff;
+    border-style: solid;
+    border-width: 2px;
     width: 100%;
-    padding: 20px 40px;
+    padding: 20px 15% 20px 15.4%;
   }
 
   nav {
