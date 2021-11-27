@@ -9,17 +9,8 @@
       а чтобы было интереснее мы добавили рейтинг!
       <p>Чтобы получить доступ к модерированию пожалуйста авторизируйтесь.</p>
     </div>
-    <div id="score">
-      <UserScore picture="https://lh3.googleusercontent.com/a-/AOh14GiQI47AgIhlYXJ4lt6JdJj4KySh3fdZMuRONGNy=s96-c"
-                 name="Alexander" points="10.00"/>
-      <UserScore picture="https://i0.wp.com/colourlex.com/wp-content/uploads/2021/02/Chrome-red-painted-swatch-N-300x300.jpg"
-                 name="Ivan" points="9.05"/>
-      <UserScore picture="https://www.eparket.com/images/product/9/88175/CT-170-060_1.jpg"
-                 name="Arkady" points="8.35"/>
-      <UserScore picture="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAA1BMVEUAAP+KeNJXAAAASElEQVR4nO3BgQAAAADDoPlTX+AIVQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwDcaiAAFXD1ujAAAAAElFTkSuQmCC"
-                 name="Anton" points="5.30"/>
-      <UserScore picture="https://cdn.webshopapp.com/shops/66605/files/264371468/oracal-970-canary-yellow.jpg"
-                 name="Daniel" points="5.12"/>
+    <div v-if="items.length !== 0" id="score">
+      <UserScore v-for="item in items" v-bind:picture="item.Picture" v-bind:name="item.Name" v-bind:points="item.Score"/>
     </div>
   </div>
 </template>
@@ -27,7 +18,23 @@
 <script>
   import UserScore from "./UserScore.vue";
   export default {
-    components: {UserScore}
+    components: {UserScore},
+    data() {
+      return {
+        items: []
+      }
+    },
+    beforeMount() {
+      var xhr = new XMLHttpRequest();
+      var context = this;
+      xhr.open('GET', 'http://localhost:3000/rating');
+      xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+      xhr.onload = function () {
+        const json = JSON.parse(xhr.responseText);
+        context.items = json;
+      };
+      xhr.send();
+    }
   }
 </script>
 
