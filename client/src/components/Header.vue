@@ -6,7 +6,7 @@
       <div id="pic"><img :src="user.picture"></div>
       <div id="name"><h1>{{user.username}}</h1></div>
       <ul>
-        <li>Points: {{user.points}}</li>
+        <li v-if="user.username !== null">Points: {{user.points}}</li>
         <li v-if="user.username == null" id="signin">
           <div id="google-signin-btn" class="g-signin2" data-onsuccess="onSignIn"></div>
         </li>
@@ -32,6 +32,7 @@
           document.cookie = "session-token=" + json.token;
           document.cookie = "name=" + json.given_name;
           document.cookie = "picture=" + json.picture;
+          document.cookie = "points=" + json.points;
           context.user.session_token = json.token;
           context.user.picture = json.picture;
         };
@@ -42,18 +43,22 @@
         auth2.signOut().then(function () {
           console.log('User signed out.');
         });
-        document.cookie = "session-token=" + '=; Max-Age=0'
-        document.cookie = "name=" + '=; Max-Age=0'
-        document.cookie = "picture=" + '=; Max-Age=0'
+        document.cookie = "session-token=" + '=; Max-Age=0';
+        document.cookie = "name=" + '=; Max-Age=0';
+        document.cookie = "picture=" + '=; Max-Age=0';
+        document.cookie = "points=" + '=; Max-Age=0';
         window.location.reload();
       }
     },
     mounted() {
-      var matchName = document.cookie.match(RegExp('(?:^|;\\s*)' + "name" + '=([^;]*)'));
+      const matchName = document.cookie.match(RegExp('(?:^|;\\s*)' + "name" + '=([^;]*)'));
       this.user.username = matchName ? matchName[1] : null;
 
-      var matchPicture = document.cookie.match(RegExp('(?:^|;\\s*)' + "picture" + '=([^;]*)'));
+      const matchPicture = document.cookie.match(RegExp('(?:^|;\\s*)' + "picture" + '=([^;]*)'));
       this.user.picture = matchPicture ? matchPicture[1] : null;
+
+      const matchPoints= document.cookie.match(RegExp('(?:^|;\\s*)' + "points" + '=([^;]*)'));
+      this.user.points = matchPoints ? matchPoints[1] : null;
 
       gapi.signin2.render('google-signin-btn', {
         onsuccess: this.onSignIn
@@ -64,7 +69,7 @@
         user: {
           username: null,
           picture: null,
-          points: 10,
+          points: 0,
           session_token: 0
         }
       }
