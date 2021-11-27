@@ -1,20 +1,19 @@
 <template>
   <header>
-    <div style="display: none" class="g-signin2"></div>
+    <div style="display: none" class="g-signin2" ></div>
 
     <nav class="nav">
       <div id="pic"><img :src="user.picture"></div>
       <div id="name"><h1>{{user.username}}</h1></div>
       <ul>
-        <li v-if="user.username !== null">Points: {{user.points}}</li>
+        <li v-if="user.username !== null">Points: <span id="points" >{{user.points}}</span></li>
         <li v-if="user.username == null" id="signin">
           <div id="google-signin-btn" class="g-signin2" data-onsuccess="onSignIn" data-height="40px"></div>
         </li>
-        <li v-else id="signout"><a href="#" v-on:click="signOut">Sign out</a></li>
+        <li v-else id="signout"><a href="#" v-on:click="signOut">Выйти</a></li>
 
         <script type="application/javascript">
           function onSignIn(googleUser){
-            var context = this
             var id_token = googleUser.getAuthResponse().id_token;
             var xhr = new XMLHttpRequest();
             xhr.open('POST', 'http://localhost:3000/auth');
@@ -23,6 +22,7 @@
             xhr.onload = function () {
               const json = JSON.parse(xhr.responseText)
               document.cookie = "session-token=" + json.token;
+              document.cookie = "id=" + json.id;
               document.cookie = "name=" + json.given_name;
               document.cookie = "picture=" + json.picture;
               document.cookie = "points=" + json.points;
@@ -48,6 +48,7 @@
         document.cookie = "name=" + '=; Max-Age=0';
         document.cookie = "picture=" + '=; Max-Age=0';
         document.cookie = "points=" + '=; Max-Age=0';
+        document.cookie = "id=" + '=; Max-Age=0';
         window.location.reload();
       }
     },
@@ -64,14 +65,16 @@
       const matchPoints= document.cookie.match(RegExp('(?:^|;\\s*)' + "points" + '=([^;]*)'));
       this.user.points = matchPoints ? matchPoints[1] : null;
 
-
+      const matchId= document.cookie.match(RegExp('(?:^|;\\s*)' + "id" + '=([^;]*)'));
+      this.user.id = matchId ? matchId[1] : null;
     },
     data() {
       return {
         user: {
+          id: null,
           username: null,
           picture: null,
-          points: 0,
+          points: 0.0,
           session_token: 0
         }
       }
@@ -128,5 +131,9 @@
   img{
     height: 30pt;
     border-radius: 30pt;
+  }
+
+  a{
+    color: black;
   }
 </style>

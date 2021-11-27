@@ -2,7 +2,6 @@
   <div id="app">
     <Header/>
     <WelcomeBlock v-if="!sessionActive()"/>
-
     <item v-if="sessionActive()" v-for="(item, index) in items" v-bind:tag="item.tag" v-bind:text="item.text" v-on:remove="items.splice(index, 1)">
     </item>
 

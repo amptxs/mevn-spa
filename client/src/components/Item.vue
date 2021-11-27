@@ -1,14 +1,30 @@
 <template>
   <div id="item">
-    <div id="wrong" v-on:click="$emit('remove')">✖</div>
+    <div id="wrong" v-on:click="$emit('remove', processSelection())">✖</div>
     <div id="text"> <div id="tag">{{tag}}</div>{{text}}</div>
-    <div id="right" v-on:click="$emit('remove')">✔</div>
+    <div id="right" v-on:click="$emit('remove', processSelection())">✔</div>
   </div>
 </template>
 
 <script>
   export default {
-    props: ['text', 'tag']
+    props: ['text', 'tag'],
+    methods: {
+      processSelection: function () {
+        var id = document.cookie.match(RegExp('(?:^|;\\s*)' + "id" + '=([^;]*)'))[1];
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', 'http://localhost:3000/rating');
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+        xhr.onload = function () {
+          var pointsElement = document.getElementById("points");
+          var points = (parseFloat(pointsElement.innerText) + 0.01).toFixed(2)
+          pointsElement.innerText = points;
+          document.cookie = "points=" + points;
+        };
+        xhr.send('id=' + id);
+      }
+    }
   }
 </script>
 
