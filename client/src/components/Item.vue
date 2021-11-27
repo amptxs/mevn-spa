@@ -1,8 +1,8 @@
 <template>
   <div id="item">
-    <div id="wrong">✖</div>
+    <div id="wrong" v-on:click="$emit('remove')">✖</div>
     <div id="text"> <div id="tag">{{tag}}</div>{{text}}</div>
-    <div id="right">✔</div>
+    <div id="right" v-on:click="$emit('remove')">✔</div>
   </div>
 </template>
 

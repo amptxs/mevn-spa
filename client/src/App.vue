@@ -1,19 +1,42 @@
 <template>
   <div id="app">
     <Header/>
-    <WelcomeBlock/>
-    <Item tag="Оскорбление" text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."/>
-    <Item tag="Нецензурная лексика" text=" Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio, cumque nihil impedit, quo minus id, quod maxime placeat, facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. "/>
+    <WelcomeBlock v-if="!sessionActive()"/>
+
+    <item v-if="sessionActive()" v-for="(item, index) in items" v-bind:tag="item.tag" v-bind:text="item.text" v-on:remove="items.splice(index, 1)">
+    </item>
+
   </div>
 </template>
 
 <script>
-import Header from "./components/Header.vue";
-import Item from "./components/Item.vue";
-import WelcomeBlock from "./components/WelcomeBlock.vue";
-export default {
-  components: {Header, Item, WelcomeBlock}
-}
+  import Header from "./components/Header.vue";
+  import Item from "./components/Item.vue";
+  import WelcomeBlock from "./components/WelcomeBlock.vue";
+  import Vue from 'vue'
+
+  export default {
+    components: {Header, Item, WelcomeBlock},
+    data() {
+      return {
+        items: [
+          {tag: 'Лексика', text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam'},
+          {tag: 'Оскорбление', text: 'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'}
+        ]
+      }
+    },
+    methods: {
+      sessionActive: function () {
+        const matchSession = document.cookie.match(RegExp('(?:^|;\\s*)' + "session-token" + '=([^;]*)'));
+        return !!matchSession;
+      },
+    },
+    mounted() {
+      const ComponentCtor = Vue.extend(Item)
+      const componentInstance = new ComponentCtor({propsData: {tag: "test1"}})
+      //componentInstance.$mount(document.getElementById("mount"))
+    }
+  }
 </script>
 
 <style>
