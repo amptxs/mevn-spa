@@ -31,11 +31,6 @@
         return !!matchSession;
       },
     },
-    mounted() {
-      const ComponentCtor = Vue.extend(Item)
-      const componentInstance = new ComponentCtor({propsData: {tag: "test1"}})
-      //componentInstance.$mount(document.getElementById("mount"))
-    }
   }
 </script>
 
