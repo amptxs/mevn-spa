@@ -2,7 +2,7 @@
   <div id="item">
     <div id="wrong" v-on:click="$emit('remove', processSelection())">✖</div>
     <div id="text"> <div id="tag">{{tag}}</div>{{text}}</div>
-    <div id="right" v-on:click="$emit('remove', processSelection())">✔</div>
+    <div id="right" v-on:click="$emit('remove', processSelection(), sendText())">✔</div>
   </div>
 </template>
 
@@ -22,7 +22,18 @@
           pointsElement.innerText = points;
           document.cookie = "points=" + points;
         };
-        xhr.send('id=' + id);
+        var text = this.$props.text
+        xhr.send('id=' + id +"&" +'textModerated=' + text);
+      },
+      sendText: function () {
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', 'https://localhost:44305/api/Modder');
+        xhr.setRequestHeader('Content-Type', 'application/json');
+
+        var text = this.$props.text;
+        var tag = this.$props.tag;
+        xhr.send(JSON.stringify(text + ";" + tag));
+
       }
     }
   }
@@ -61,6 +72,7 @@
   {
     border-radius: 0px 30px 30px 0px;
     border-width: 0px 0px 0px 2px;
+    margin-left: auto;
   }
   #right:hover{
     background-color: #7eb47e;

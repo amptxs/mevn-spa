@@ -18,10 +18,7 @@
     components: {Header, Item, WelcomeBlock},
     data() {
       return {
-        items: [
-          {tag: 'Лексика', text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam'},
-          {tag: 'Оскорбление', text: 'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'}
-        ]
+        items: []
       }
     },
     methods: {
@@ -29,7 +26,29 @@
         const matchSession = document.cookie.match(RegExp('(?:^|;\\s*)' + "session-token" + '=([^;]*)'));
         return !!matchSession;
       },
+      getText: function () {
+        var context = this;
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', 'https://localhost:44305/api/Modder');
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.onload = function () {
+          const json = JSON.parse(xhr.responseText);
+          var text = json.split(';');
+          context.items.push({tag:text[1], text: text[0]});
+        };
+        xhr.send();
+      },
     },
+    beforeMount() {
+      this.getText();
+    },
+    watch: {
+      items: function(val) {
+        if (val && this.items.length < 3) {
+          this.getText();
+        }
+      }
+    }
   }
 </script>
 

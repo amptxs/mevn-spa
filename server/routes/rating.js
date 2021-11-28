@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var ObjectID = require('mongodb').ObjectId;
 module.exports = router;
+var XMLHttpRequest = require('xhr2');
 var connectables = require('../connectables')
 const collection = connectables.dataBase.collection("Users");
 
